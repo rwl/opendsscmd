@@ -53,6 +53,7 @@ type
         function GetPropertyValue(Index: Integer): String; VIRTUAL;  // Use dssclass.propertyindex to get index by name
         procedure InitPropertyValues(ArrayOffset: Integer); VIRTUAL;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); VIRTUAL;
+        procedure DumpPropertiesCSV(var F: TextFile; ActorID: Integer); VIRTUAL;
         procedure SaveWrite(var F: TextFile); VIRTUAL;
 
         procedure ClearPropSeqArray;
@@ -113,6 +114,11 @@ procedure TDSSObject.DumpProperties(var F: TextFile; Complete: Boolean);
 begin
     Writeln(F);
     Writeln(F, 'New ', DSSClassName, '.', Name);
+end;
+
+procedure TDSSObject.DumpPropertiesCSV(var F: TextFile; ActorID: Integer);
+begin
+    Write(F, Name);
 end;
 
 function TDSSObject.Edit(ActorID: Integer): Integer;

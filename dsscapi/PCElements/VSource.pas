@@ -118,6 +118,7 @@ type
 
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile; ActorID: Integer); OVERRIDE;
         function GetPropertyValue(Index: Integer): String; OVERRIDE;
 
     end;
@@ -1301,6 +1302,61 @@ begin
 
 end;
 
+procedure TVsourceObj.DumpPropertiesCSV(var F: TextFile; ActorID: Integer);
+
+var
+    i, j: Integer;
+    c: Complex;
+
+begin
+    inherited DumpPropertiesCSV(F, ActorID);
+
+    Write(F, Format(',%s', [ActiveCircuit[ActorID].BusList.Get(Terminals^[1].BusRef)]));
+    for i := 1 to Fnconds do
+        Write(F, Format('.%d', [Terminals^[1].TermNodeRef^[i]]));
+
+    if Bus2Defined then
+    begin
+        Write(F, Format(',%s', [ActiveCircuit[ActorID].BusList.Get(Terminals^[2].BusRef)]));
+        for i := 1 to Fnconds do
+            Write(F, Format('.%d', [Terminals^[2].TermNodeRef^[i]]));
+    end
+    else
+        Write(F, ',');
+
+    Write(F, Format(',%g,%g,%g,%g', [kVBase, PerUnit, Angle, SrcFrequency]));
+
+    case ZSpecType of
+        1:
+            Write(F, ',mva_sc');
+        2:
+            Write(F, ',i_sc');
+        3:
+            Write(F, ',z1_z0');
+    end;
+
+    Write(F, Format(',%g,%g,%g,%g,%g,%g,%g,%g,%g,%g,%g,%g', [MVAsc3, MVAsc1, Isc3, Isc1, R1, X1, R2, X2, R0, X0, X1R1, X0R0]));
+
+    case ScanType of
+        1:
+            Write(F, ',positive');
+        0:
+            Write(F, ',zero');
+        -1:
+            Write(F, ',none');
+    end;
+
+    case SequenceType of
+        1:
+            Write(F, ',positive');
+        0:
+            Write(F, ',zero');
+        -1:
+            Write(F, ',negative');
+    end;
+
+    Write(F, Format(',%s', [Spectrum]));
+end;
 
 //=============================================================================
 procedure TVsourceObj.InitPropertyValues(ArrayOffset: Integer);
