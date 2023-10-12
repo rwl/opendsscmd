@@ -118,7 +118,7 @@ type
 
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
-        procedure DumpPropertiesCSV(var F: TextFile; ActorID: Integer); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
         function GetPropertyValue(Index: Integer): String; OVERRIDE;
 
     end;
@@ -1302,25 +1302,18 @@ begin
 
 end;
 
-procedure TVsourceObj.DumpPropertiesCSV(var F: TextFile; ActorID: Integer);
+procedure TVsourceObj.DumpPropertiesCSV(var F: TextFile);
 
 var
-    i, j: Integer;
-    c: Complex;
+    i: Integer;
 
 begin
-    inherited DumpPropertiesCSV(F, ActorID);
+    inherited DumpPropertiesCSV(F);
 
-    Write(F, Format(',%s', [ActiveCircuit[ActorID].BusList.Get(Terminals^[1].BusRef)]));
-    for i := 1 to Fnconds do
-        Write(F, Format('.%d', [Terminals^[1].TermNodeRef^[i]]));
+    Write(F, Format(',%s', [FirstBus]));
 
     if Bus2Defined then
-    begin
-        Write(F, Format(',%s', [ActiveCircuit[ActorID].BusList.Get(Terminals^[2].BusRef)]));
-        for i := 1 to Fnconds do
-            Write(F, Format('.%d', [Terminals^[2].TermNodeRef^[i]]));
-    end
+        Write(F, Format(',%s', [NextBus]))
     else
         Write(F, ',');
 

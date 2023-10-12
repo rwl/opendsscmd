@@ -146,7 +146,7 @@ type
         function GetPropertyValue(Index: Integer): String; OVERRIDE;
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
-        procedure DumpPropertiesCSV(var F: TextFile; ActorID: Integer); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
 
         property Handle: Integer READ FHandle WRITE Set_Handle;
         property Enabled: Boolean READ FEnabled WRITE Set_Enabled;
@@ -1086,14 +1086,14 @@ begin
 
 end;
 
-procedure TDSSCktElement.DumpPropertiesCSV(var F: TextFile; ActorID: Integer);
+procedure TDSSCktElement.DumpPropertiesCSV(var F: TextFile);
 
 var
     i, j: Integer;
 
 begin
 
-    inherited DumpPropertiesCSV(F, ActorID);
+    inherited DumpPropertiesCSV(F);
 
     if FEnabled then
         Write(F, ',true')

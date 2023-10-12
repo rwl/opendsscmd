@@ -1310,6 +1310,39 @@ begin
 
 end;
 
+procedure TLineObj.DumpPropertiesCSV(var F: TextFile);
+
+var
+    i: Integer;
+
+begin
+    inherited DumpPropertiesCSV(F);
+
+    Write(F, Format(',%s,%s,%g', [FirstBus, NextBus, Len]));
+
+    case LengthUnits of
+        UNITS_NONE:
+            Write(F, ',none');
+        UNITS_MILES:
+            Write(F, ',miles');
+        UNITS_KFT:
+            Write(F, ',kft');
+        UNITS_KM:
+            Write(F, ',km');
+        UNITS_M:
+            Write(F, ',m');
+        UNITS_FT:
+            Write(F, ',ft');
+        UNITS_IN:
+            Write(F, ',in');
+        UNITS_CM:
+            Write(F, ',cm');
+        UNITS_MM:
+            Write(F, ',mm');
+    end;
+
+    Write(F, Format(',%s,%s', [CondCode, GeometryCode]));
+end;
 
 {*********** Placeholder for Line module No Load Loss procedure *********}
 procedure TLineObj.GetLosses(var TotalLosses, LoadLosses, NoLoadLosses: Complex; ActorID: Integer);

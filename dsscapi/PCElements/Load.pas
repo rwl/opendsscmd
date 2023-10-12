@@ -236,6 +236,7 @@ type
         function GetPropertyValue(Index: Integer): String; OVERRIDE;
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
 
         procedure UpdateVoltageBases;
 
@@ -2406,6 +2407,62 @@ begin
 
 end;
 
+procedure TLoadObj.DumpPropertiesCSV(var F: TextFile);
+
+var
+    i: Integer;
+
+begin
+    inherited DumpPropertiesCSV(F);
+
+    Write(F, Format(',%s,%g,%g,%g,%g,%g', [FirstBus, kVLoadBase, kWBase, kvarBase, kVABase, PFNominal]));
+
+    case FLoadModel of
+        1:
+            Write(F, ',pq');
+        2:
+            Write(F, ',z');
+        3:
+            Write(F, ',motor');
+        4:
+            Write(F, ',cvr');
+        5:
+            Write(F, ',i');
+        6:
+            Write(F, ',fixed_q');
+        7:
+            Write(F, ',fixed_qz');
+        8:
+            Write(F, ',zipv');
+    end;
+
+    Write(F, Format(',%g,%g,%g,%g', [Vminpu, Vmaxpu, Rneut, Xneut]));
+
+    case Connection of
+        0:
+            Write(F, ',wye');
+        1:
+            Write(F, ',delta');
+    end;
+
+    case LoadSpecType of
+        0:
+            Write(F, ',kw_pf');
+        1:
+            Write(F, ',kw_kvar');
+        2:
+            Write(F, ',kva_pf');
+    end;
+
+    if Fixed then
+        Write(F, ',fixed')
+    else if ExemptFromLDCurve then
+        Write(F, ',exempt')
+    else
+        Write(F, ',variable');
+
+    Write(F, Format(',%s,%s,%s,%s', [YearlyShape, DailyShape, DutyShape, Spectrum]));
+end;
 
 procedure TLoadObj.Set_kVAAllocationFactor(const Value: Double);
 begin

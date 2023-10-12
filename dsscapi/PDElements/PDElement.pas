@@ -77,6 +77,8 @@ type
         procedure CalcCustInterrupts;
         procedure ZeroReliabilityAccums; // Zero out reliability accumulators
 
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
+
         property ExcesskVANorm[idxTerm: Integer;ActorID: Integer]: Complex READ Get_ExcesskVANorm;
         property ExcesskVAEmerg[idxTerm: Integer;ActorID: Integer]: Complex READ Get_ExcesskVAEmerg;
 
@@ -348,6 +350,15 @@ begin
         Bus_Num_Interrupt := 0.0;
         BusSectionID := -1; // signify not set
     end;
+
+end;
+
+procedure TPDElement.DumpPropertiesCSV(var F: TextFile);
+begin
+
+    inherited DumpPropertiesCSV(F);
+
+    // Write(F, Format(',%g,%g', [NormAmps, EmergAmps]));
 
 end;
 
