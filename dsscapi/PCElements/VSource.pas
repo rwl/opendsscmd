@@ -1317,7 +1317,7 @@ begin
     else
         Write(F, ',');
 
-    Write(F, Format(',%g,%g,%g,%g', [kVBase, PerUnit, Angle, SrcFrequency]));
+    Write(F, Format(',%.16g,%.16g,%.16g,%.16g', [kVBase, PerUnit, Angle, SrcFrequency]));
 
     case ZSpecType of
         1:
@@ -1328,7 +1328,8 @@ begin
             Write(F, ',z1_z0');
     end;
 
-    Write(F, Format(',%g,%g,%g,%g,%g,%g,%g,%g,%g,%g,%g,%g', [MVAsc3, MVAsc1, Isc3, Isc1, R1, X1, R2, X2, R0, X0, X1R1, X0R0]));
+    Write(F, Format(',%.16g,%.16g,%.16g,%g,%.16g,%.16g,%.16g,%.16g,%.16g,%.16g,%.16g,%.16g', 
+        [MVAsc3, MVAsc1, Isc3, Isc1, R1, X1, R2, X2, R0, X0, X1R1, X0R0]));
 
     case ScanType of
         1:

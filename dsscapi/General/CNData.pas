@@ -57,6 +57,7 @@ type
 
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
     end;
 
 implementation
@@ -281,6 +282,13 @@ begin
             end;
         end;
     end;
+end;
+
+procedure TCNDataObj.DumpPropertiesCSV(var F: TextFile);
+begin
+    inherited DumpPropertiesCSV(F);
+
+    Write(F, Format(',%d,%.16g,%.16g,%.16g', [FkStrand, FDiaStrand, FGmrStrand, FRStrand]));
 end;
 
 procedure TCNDataObj.InitPropertyValues(ArrayOffset: Integer);

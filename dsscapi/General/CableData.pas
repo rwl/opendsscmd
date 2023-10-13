@@ -51,6 +51,7 @@ type
 
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
     end;
 
 implementation
@@ -197,6 +198,13 @@ begin
             end;
         end;
     end;
+end;
+
+procedure TCableDataObj.DumpPropertiesCSV(var F: TextFile);
+begin
+    inherited DumpPropertiesCSV(F);
+
+    Write(F, Format(',%.16g,%.16g,%.16g,%.16g', [FEpsR, FInsLayer, FDiaIns, FDiaCable]));
 end;
 
 procedure TCableDataObj.InitPropertyValues(ArrayOffset: Integer);

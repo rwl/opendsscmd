@@ -45,6 +45,7 @@ type
 
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
     end;
 
 implementation
@@ -205,6 +206,11 @@ end;
 procedure TWireDataObj.DumpProperties(var F: TextFile; Complete: Boolean);
 begin
     inherited DumpProperties(F, Complete);
+end;
+
+procedure TWireDataObj.DumpPropertiesCSV(var F: TextFile);
+begin
+    inherited DumpPropertiesCSV(F);
 end;
 
 procedure TWireDataObj.InitPropertyValues(ArrayOffset: Integer);

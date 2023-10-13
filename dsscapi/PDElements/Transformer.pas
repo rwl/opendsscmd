@@ -1523,7 +1523,7 @@ var
 begin
     inherited DumpPropertiesCSV(F);
 
-    Write(F, Format(',%-.16g,%-.16g,%-.16g,%-.16g,%-.16g', [XHL, XHT, XLT, pctLoadLoss, ppm_FloatFactor])); // * 1e6
+    Write(F, Format(',%.16g,%.16g,%.16g,%.16g,%.16g', [XHL, XHT, XLT, pctLoadLoss, ppm_FloatFactor])); // * 1e6
 end;
 
 procedure TTransfObj.DumpWindingPropertiesCSV(var F: TextFile);
@@ -1545,7 +1545,7 @@ begin
                 1:
                     Write(F, ',delta');
             end;
-            Write(F, Format(',%-.16g,%-.16g,%-.16g,%-.16g,%-.16g,%-.16g,%-.16g,%-.16g,%d',
+            Write(F, Format(',%.16g,%.16g,%.16g,%.16g,%.16g,%.16g,%.16g,%.16g,%d',
                 [kVLL, kVA, puTap, Rpu, Rneut, Xneut, MaxTap, MinTap, NumTaps]));
             Writeln(F);
             BusName := NextBus;

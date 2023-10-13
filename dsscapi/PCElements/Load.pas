@@ -2415,7 +2415,7 @@ var
 begin
     inherited DumpPropertiesCSV(F);
 
-    Write(F, Format(',%s,%g,%g,%g,%g,%g', [FirstBus, kVLoadBase, kWBase, kvarBase, kVABase, PFNominal]));
+    Write(F, Format(',%s,%.16g,%.16g,%.16g,%.16g,%.16g', [FirstBus, kVLoadBase, kWBase, kvarBase, kVABase, PFNominal]));
 
     case FLoadModel of
         1:
@@ -2436,7 +2436,7 @@ begin
             Write(F, ',zipv');
     end;
 
-    Write(F, Format(',%g,%g,%g,%g', [Vminpu, Vmaxpu, Rneut, Xneut]));
+    Write(F, Format(',%.16g,%.16g,%.16g,%.16g', [Vminpu, Vmaxpu, Rneut, Xneut]));
 
     case Connection of
         0:

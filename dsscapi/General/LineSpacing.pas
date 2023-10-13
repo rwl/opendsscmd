@@ -76,6 +76,7 @@ type
         function GetPropertyValue(Index: Integer): String; OVERRIDE;
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
 
         // CIM XML accessors
         property Xcoord[i: Integer]: Double READ Get_FX
@@ -379,6 +380,29 @@ begin
         end;
     end;
 
+end;
+
+procedure TLineSpacingObj.DumpPropertiesCSV(var F: TextFile);
+
+var
+    i: Integer;
+
+begin
+    inherited DumpPropertiesCSV(F);
+
+    Write(F, Format(',%d,%d', [FNPhases, FNConds]));
+
+    Write(F, ',[');
+    for i := 1 to FNConds do
+        Write(F, Format(' %.16g', [FX^[i]]));
+    Write(F, ' ]');
+
+    Write(F, ',[');
+    for i := 1 to FNConds do
+        Write(F, Format(' %.16g', [FY^[i]]));
+    Write(F, ' ]');
+
+    Write(F, Format(',%s', [LineUnitsStr(FUnits)]));
 end;
 
 function ArrayString(pF: pDoubleArray; N: Integer): String;

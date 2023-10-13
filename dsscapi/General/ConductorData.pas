@@ -78,6 +78,7 @@ type
 
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
     end;
 
     TConductorDataArray = array[1..100] of TConductorDataObj;
@@ -335,6 +336,15 @@ begin
             end;
         end;
     end;
+end;
+
+procedure TConductorDataObj.DumpPropertiesCSV(var F: TextFile);
+begin
+    inherited DumpPropertiesCSV(F);
+
+    Write(F, Format(',%.16g,%.16g,%s,%.16g,%s,%.16g,%s,%.16g,%.16g',
+        [FR60, FRDC, LineUnitsStr(FresistanceUnits), FGMR60, LineUnitsStr(FGMRUnits),
+        Fradius, LineUnitsStr(FRadiusUnits), NormAmps, EmergAmps]));
 end;
 
 procedure TConductorDataObj.InitPropertyValues(ArrayOffset: Integer);

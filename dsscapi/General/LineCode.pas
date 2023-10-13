@@ -111,6 +111,7 @@ type
         function GetPropertyValue(Index: Integer): String; OVERRIDE;
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
 
     end;
 
@@ -809,6 +810,19 @@ begin
 
     end;
 
+end;
+
+procedure TLineCodeObj.DumpPropertiesCSV(var F: TextFile);
+begin
+    inherited DumpPropertiesCSV(F);
+
+    Write(F, Format(',%d,%.16g,%.16g,%.16g,%.16g,%.16g,%.16g,%s,%s,%s,%s,%.16g,%.16g,%.16g',
+        [NumPhases, R1, X1, R0, X0, C1, C0, LineUnitsStr(Units), get_Rmatrix, get_Xmatrix, get_CMatrix, Rg, Xg, rho]));
+
+    if SymComponentsModel then
+        Write(F, ',true')
+    else
+        Write(F, ',false');
 end;
 
 function TLineCodeObj.GetPropertyValue(Index: Integer): String;

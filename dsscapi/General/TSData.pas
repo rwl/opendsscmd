@@ -55,6 +55,7 @@ type
 
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
     end;
 
 implementation
@@ -264,6 +265,13 @@ begin
             end;
         end;
     end;
+end;
+
+procedure TTSDataObj.DumpPropertiesCSV(var F: TextFile);
+begin
+    inherited DumpPropertiesCSV(F);
+
+    Write(F, Format(',%.16g,%.16g,%.16g', [FDiaShield, FTapeLayer, FTapeLap]));
 end;
 
 procedure TTSDataObj.InitPropertyValues(ArrayOffset: Integer);

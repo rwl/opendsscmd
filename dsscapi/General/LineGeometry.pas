@@ -127,6 +127,7 @@ type
         function GetPropertyValue(Index: Integer): String; OVERRIDE;
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
         procedure SaveWrite(var F: TextFile); OVERRIDE;
 
         // called from a Line object that has its own Spacing and Wires input
@@ -677,6 +678,60 @@ begin
 
 end;
 
+procedure TLineGeometryObj.DumpPropertiesCSV(var F: TextFile);
+
+var
+    i: Integer;
+
+begin
+    inherited DumpPropertiesCSV(F);
+
+    Write(F, Format(',%d,%d', [FNPhases, FNConds]));
+
+    if FReduce then
+        Write(F, ',true')
+    else
+        Write(F, ',false');
+
+    Write(F, Format(',%.16g', [RhoEarth]));
+
+    Write(F, ',[');
+    for i := 1 to FNConds do
+        Write(F, Format(' %.16g', [FX^[i]]));
+    Write(F, ' ]');
+
+    Write(F, ',[');
+    for i := 1 to FNConds do
+        Write(F, Format(' %.16g', [FY^[i]]));
+    Write(F, ' ]');
+
+    Write(F, ',[');
+    for i := 1 to FNConds do
+        Write(F, Format(' %s', [LineUnitsStr(FUnits^[i])]));
+    Write(F, ' ]');
+
+    Write(F, Format(',%s', [FSpacingType]));
+
+    Write(F, ',[');
+    for i := 1 to FNConds do
+        if not (FWireData^[i] is TCNDataObj) and not (FWireData^[i] is TTSDataObj) then
+            Write(F, Format(' %s', [FCondName^[i]]));
+    Write(F, ' ]');
+
+    Write(F, ',[');
+    for i := 1 to FNConds do
+        if (FWireData^[i] is TCNDataObj) then
+            Write(F, Format(' %s', [FCondName^[i]]));
+    Write(F, ' ]');
+
+    Write(F, ',[');
+    for i := 1 to FNConds do
+        if (FWireData^[i] is TTSDataObj) then
+            Write(F, Format(' %s', [FCondName^[i]]));
+    Write(F, ' ]');
+
+end;
+
 function TLineGeometryObj.GetPropertyValue(Index: Integer): String;
 var
     j,
@@ -1071,6 +1126,33 @@ begin
             end;
         end;
     end;
+
+
+    // Write('LineGeometry.', Name, ' X: ');
+    // for i := 1 to FNconds do
+    //     Write(Format('%g, ', [FLineData.X[i, 0]]));
+    // Writeln();
+    // Write('LineGeometry.', Name, ' Y: ');
+    // for i := 1 to FNconds do
+    //     Write(Format('%g, ', [FLineData.Y[i, 0]]));
+    // Writeln();
+    // Write('LineGeometry.', Name, ' radius: ');
+    // for i := 1 to FNconds do
+    //     Write(Format('%g, ', [FLineData.radius[i, 0]]));
+    // Writeln();
+    // Write('LineGeometry.', Name, ' GMR: ');
+    // for i := 1 to FNconds do
+    //     Write(Format('%g, ', [FLineData.GMR[i, 0]]));
+    // Writeln();
+    // Write('LineGeometry.', Name, ' Rdc: ');
+    // for i := 1 to FNconds do
+    //     Write(Format('%g, ', [FLineData.Rdc[i, 0]]));
+    // Writeln();
+    // Write('LineGeometry.', Name, ' Rac: ');
+    // for i := 1 to FNconds do
+    //     Write(Format('%g, ', [FLineData.Rac[i, 0]]));
+    // Writeln();
+
 
     FLineData.Nphases := FNphases;
     DataChanged := FALSE;

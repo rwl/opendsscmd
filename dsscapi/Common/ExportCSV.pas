@@ -18,7 +18,13 @@ uses
     Vsource,
     Load,
     Line,
-    Transformer;
+    Transformer,
+    LineCode,
+    LineGeometry,
+    LineSpacing,
+    WireData,
+    CNData,
+    TSData;
 
 procedure ExportCKV(FileNm: String);
 
@@ -35,6 +41,20 @@ var
     pLoad: TLoadObj;
     pXf: TTransfObj;
     Bus: TDSSbus;
+
+    clsCode: TLineCode;
+    clsGeom: TLineGeometry;
+    clsWire: TWireData;
+    clsSpac: TLineSpacing;
+    clsTape: TTSData;
+    clsConc: TCNData;
+
+    pCode: TLineCodeObj;
+    pGeom: TLineGeometryObj;
+    pWire: TWireDataObj;
+    pSpac: TLineSpacingObj;
+    pTape: TTSDataObj;
+    pConc: TCNDataObj;
 
 begin
 
@@ -128,6 +148,120 @@ begin
         begin
             pXf.DumpWindingPropertiesCSV(F);
             pXf := ActiveCircuit[ActiveActor].Transformers.Next;
+        end;
+    finally
+        CloseFile(F);
+    end;
+
+    clsCode := DSSClassList[ActiveActor].Get(ClassNames[ActiveActor].Find('linecode'));
+    pCode := clsCode.ElementList.First;
+    if pCode <> NIL then
+    try
+        Assignfile(F, GetOutputDirectory + 'LineCode.csv');
+        ReWrite(F);
+
+        Writeln(F, 'name,n_phases,r1,x1,r0,x0,c1,c0,units,r_matrix,x_matrix,c_matrix,rg,xg,rho,symmetrical_components');
+
+        while pCode <> NIL do
+        begin
+            pCode.DumpPropertiesCSV(F);
+            Writeln(F);
+            pCode := clsCode.ElementList.Next;
+        end;
+    finally
+        CloseFile(F);
+    end;
+
+    clsGeom := DSSClassList[ActiveActor].Get(ClassNames[ActiveActor].Find('linegeometry'));
+    pGeom := clsGeom.ElementList.First;
+    if pGeom <> NIL then
+    try
+        Assignfile(F, GetOutputDirectory + 'LineGeometry.csv');
+        ReWrite(F);
+
+        Writeln(F, 'name,n_phases,n_conds,reduce,rho_earth,x_coords,heights,units,spacing,wires,cn_cables,ts_cables');
+
+        while pGeom <> NIL do
+        begin
+            pGeom.DumpPropertiesCSV(F);
+            Writeln(F);
+            pGeom := clsGeom.ElementList.Next;
+        end;
+    finally
+        CloseFile(F);
+    end;
+
+    clsSpac := DSSClassList[ActiveActor].Get(ClassNames[ActiveActor].Find('linespacing'));
+    pSpac := clsSpac.ElementList.First;
+    if pSpac <> NIL then
+    try
+        Assignfile(F, GetOutputDirectory + 'LineSpacing.csv');
+        ReWrite(F);
+
+        Writeln(F, 'name,n_phases,n_conds,x_coords,heights,units');
+
+        while pSpac <> NIL do
+        begin
+            pSpac.DumpPropertiesCSV(F);
+            Writeln(F);
+            pSpac := clsSpac.ElementList.Next;
+        end;
+    finally
+        CloseFile(F);
+    end;
+
+    clsWire := DSSClassList[ActiveActor].Get(ClassNames[ActiveActor].Find('wiredata'));
+    pWire := clsWire.ElementList.First;
+    if pWire <> NIL then
+    try
+        Assignfile(F, GetOutputDirectory + 'WireData.csv');
+        ReWrite(F);
+
+        Writeln(F, 'name,r,r_dc,r_units,gmr,gmr_units,radius,radius_units,normal_amps,emergency_amps');
+
+        while pWire <> NIL do
+        begin
+            pWire.DumpPropertiesCSV(F);
+            Writeln(F);
+            pWire := clsWire.ElementList.Next;
+        end;
+    finally
+        CloseFile(F);
+    end;
+
+    clsConc := DSSClassList[ActiveActor].Get(ClassNames[ActiveActor].Find('CNData'));
+    pConc := clsConc.ElementList.First;
+    if pConc <> NIL then
+    try
+        Assignfile(F, GetOutputDirectory + 'CNData.csv');
+        ReWrite(F);
+
+        Writeln(F, 'name,n_phases,n_conds,eps_r,ins_layer,dia_ins,dia_cable,k_strand,dia_strand,gmr_strand,r_strand');
+
+        while pConc <> NIL do
+        begin
+            pConc.DumpPropertiesCSV(F);
+            Writeln(F);
+            pConc := clsConc.ElementList.Next;
+        end;
+    finally
+        CloseFile(F);
+    end;
+
+    clsTape := DSSClassList[ActiveActor].Get(ClassNames[ActiveActor].Find('TSData'));
+    pTape := clsTape.ElementList.First;
+    if pTape <> NIL then
+    try
+        Assignfile(F, GetOutputDirectory + 'TSData.csv');
+        ReWrite(F);
+
+        Writeln(F, 'name,n_phases,n_conds,eps_r,ins_layer,dia_ins,dia_cable,dia_shield,tape_layer,tape_lap');
+
+        while pTape <> NIL do
+        begin
+            pTape.DumpPropertiesCSV(F);
+            Writeln(F);
+            pTape := clsTape.ElementList.Next;
         end;
     finally
         CloseFile(F);
