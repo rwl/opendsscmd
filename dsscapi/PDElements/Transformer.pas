@@ -195,6 +195,8 @@ type
         function GetPropertyValue(Index: Integer): String; OVERRIDE;
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
+        procedure DumpWindingPropertiesCSV(var F: TextFile);
         procedure SaveWrite(var F: TextFile); OVERRIDE;
         procedure GetWindingVoltages(iWind: Integer; VBuffer: pComplexArray; ActorID: Integer);
         procedure GetAllWindingCurrents(CurrBuffer: pComplexArray; ActorID: Integer);  // All Winding currents in complex array
@@ -1510,6 +1512,44 @@ begin
             Write(F, TermRef^[i]: 0, ' ');
         Writeln(F);
 
+    end;
+end;
+
+procedure TTransfObj.DumpPropertiesCSV(var F: TextFile);
+
+var
+    i: Integer;
+
+begin
+    inherited DumpPropertiesCSV(F);
+
+    Write(F, Format(',%-.16g,%-.16g,%-.16g,%-.16g,%-.16g', [XHL, XHT, XLT, pctLoadLoss, ppm_FloatFactor])); // * 1e6
+end;
+
+procedure TTransfObj.DumpWindingPropertiesCSV(var F: TextFile);
+
+var
+    i: Integer;
+    BusName: String;
+
+begin
+    BusName := FirstBus;
+    for i := 1 to Numwindings do
+    begin
+        Write(F, Format('%s,%d,%s', [Name, i, BusName]));
+        with Winding^[i] do
+        begin
+            case Connection of
+                0:
+                    Write(F, ',wye');
+                1:
+                    Write(F, ',delta');
+            end;
+            Write(F, Format(',%-.16g,%-.16g,%-.16g,%-.16g,%-.16g,%-.16g,%-.16g,%-.16g,%d',
+                [kVLL, kVA, puTap, Rpu, Rneut, Xneut, MaxTap, MinTap, NumTaps]));
+            Writeln(F);
+            BusName := NextBus;
+        end;
     end;
 end;
 

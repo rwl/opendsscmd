@@ -17,7 +17,8 @@ uses
     Utilities,
     Vsource,
     Load,
-    Line;
+    Line,
+    Transformer;
 
 procedure ExportCKV(FileNm: String);
 
@@ -32,6 +33,7 @@ var
     pVsrc: TVsourceObj;
     pLine: TLineObj;
     pLoad: TLoadObj;
+    pXf: TTransfObj;
     Bus: TDSSbus;
 
 begin
@@ -91,6 +93,41 @@ begin
             pLoad.DumpPropertiesCSV(F);
             Writeln(F);
             pLoad := ActiveCircuit[ActiveActor].Loads.Next;
+        end;
+    finally
+        CloseFile(F);
+    end;
+
+    pXf := ActiveCircuit[ActiveActor].Transformers.First;
+    if pXf <> NIL then
+    try
+        Assignfile(F, GetOutputDirectory + 'Transformer.csv');
+        ReWrite(F);
+
+        Writeln(F, 'name,enabled,n_phases,n_conds,base_freq,x_hl,x_ht,x_lt,pct_load_loss,ppm_anti_float');
+
+        while pXf <> NIL do
+        begin
+            pXf.DumpPropertiesCSV(F);
+            Writeln(F);
+            pXf := ActiveCircuit[ActiveActor].Transformers.Next;
+        end;
+    finally
+        CloseFile(F);
+    end;
+
+    pXf := ActiveCircuit[ActiveActor].Transformers.First;
+    if pXf <> NIL then
+    try
+        Assignfile(F, GetOutputDirectory + 'Winding.csv');
+        ReWrite(F);
+
+        Writeln(F, 'transformer,winding,terminal,connection,kv,kva,tap,r_pct,r_neut,x_neut,max_tap,min_tap,num_taps');
+
+        while pXf <> NIL do
+        begin
+            pXf.DumpWindingPropertiesCSV(F);
+            pXf := ActiveCircuit[ActiveActor].Transformers.Next;
         end;
     finally
         CloseFile(F);
