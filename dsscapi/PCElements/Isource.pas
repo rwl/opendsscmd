@@ -91,6 +91,7 @@ type
         procedure GetCurrents(Curr: pComplexArray; ActorID: Integer); OVERRIDE;
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
 
     end;
 
@@ -662,6 +663,20 @@ begin
         Writeln(F);
     end;
 
+end;
+
+procedure TIsourceObj.DumpPropertiesCSV(var F: TextFile);
+begin
+    inherited DumpPropertiesCSV(F);
+
+    Write(F, Format(',%s', [FirstBus]));
+
+    if Bus2Defined then
+        Write(F, Format(',%s', [NextBus]))
+    else
+        Write(F, ',');
+
+    Write(F, Format(',%.16g,%.16g,%.16g,%s', [Amps, Angle, SrcFrequency, Spectrum]));
 end;
 
 procedure TIsourceObj.InitPropertyValues(ArrayOffset: Integer);

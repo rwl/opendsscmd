@@ -2436,14 +2436,7 @@ begin
             Write(F, ',zipv');
     end;
 
-    Write(F, Format(',%.16g,%.16g,%.16g,%.16g', [Vminpu, Vmaxpu, Rneut, Xneut]));
-
-    case Connection of
-        0:
-            Write(F, ',wye');
-        1:
-            Write(F, ',delta');
-    end;
+    Write(F, Format(',%.16g,%.16g,%.16g,%.16g,%s', [Vminpu, Vmaxpu, Rneut, Xneut, ConnectionToString(Connection)]));
 
     case LoadSpecType of
         0:

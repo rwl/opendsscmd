@@ -38,6 +38,8 @@ function CmplxArrayToString(cpxarray: pComplexArray; count: Integer): String;
 function EncloseQuotes(const s: String): String;
 procedure ShowMessageBeep(const s: String);
 function FullName(pElem: TDSSCktElement): String;
+function BoolToString(v: Boolean): String;
+function ConnectionToString(connection: Integer): String;
 
 {Parsing Utilities}
 procedure ParseObjectClassandName(const FullObjName: String; var ClassName, ObjName: String);
@@ -449,6 +451,26 @@ end;
 function EncloseQuotes(const s: String): String;
 begin
     Result := '"' + s + '"';
+end;
+
+
+function BoolToString(v: Boolean): String;
+begin
+    if v then
+        Result := 'true'
+    else
+        Result := 'false';
+end;
+
+
+function ConnectionToString(connection: Integer): String;
+begin
+    case connection of
+        0:
+            Result := 'wye';
+        1:
+            Result := 'delta';
+    end;
 end;
 
 

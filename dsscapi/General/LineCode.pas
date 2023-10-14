@@ -816,13 +816,8 @@ procedure TLineCodeObj.DumpPropertiesCSV(var F: TextFile);
 begin
     inherited DumpPropertiesCSV(F);
 
-    Write(F, Format(',%d,%.16g,%.16g,%.16g,%.16g,%.16g,%.16g,%s,%s,%s,%s,%.16g,%.16g,%.16g',
-        [NumPhases, R1, X1, R0, X0, C1, C0, LineUnitsStr(Units), get_Rmatrix, get_Xmatrix, get_CMatrix, Rg, Xg, rho]));
-
-    if SymComponentsModel then
-        Write(F, ',true')
-    else
-        Write(F, ',false');
+    Write(F, Format(',%d,%.16g,%.16g,%.16g,%.16g,%.16g,%.16g,%s,%s,%s,%s,%.16g,%.16g,%.16g,%s',
+        [NumPhases, R1, X1, R0, X0, C1, C0, LineUnitsStr(Units), get_Rmatrix, get_Xmatrix, get_CMatrix, Rg, Xg, rho, BoolToString(SymComponentsModel)]));
 end;
 
 function TLineCodeObj.GetPropertyValue(Index: Integer): String;

@@ -15,10 +15,16 @@ uses
     Circuit,
     Bus,
     Utilities,
+    CktElement,
+
     Vsource,
+    Isource,
     Load,
+    Generator,
+
     Line,
     Transformer,
+
     LineCode,
     LineGeometry,
     LineSpacing,
@@ -36,9 +42,15 @@ var
     cValues: pComplexArray;
     BusName: String;
     FileName: String;
+
+    pElem: TDSSCktElement;
+
     pVsrc: TVsourceObj;
-    pLine: TLineObj;
+    pIsrc: TIsourceObj;
     pLoad: TLoadObj;
+    pGen: TGeneratorObj;
+
+    pLine: TLineObj;
     pXf: TTransfObj;
     Bus: TDSSbus;
 
@@ -62,42 +74,61 @@ begin
         Exit;
 
     pVsrc := ActiveCircuit[ActiveActor].Sources.First;
-    if pVsrc <> NIL then
-    try
-        Assignfile(F, GetOutputDirectory + 'VSource.csv');
-        ReWrite(F);
-
-        Writeln(F, 'name,enabled,n_phases,n_conds,base_freq,terminal1,terminal2,base_kv,per_unit,angle,src_frequency,z_spec_type,mva_sc3,mva_sc1,i_sc3,i_sc1,r1,x1,r2,x2,r0,x0,x1r1,x0r0,scan_type,sequence_type,spectrum');
-
-        while pVsrc <> NIL do
+    while pVsrc <> NIL do
+    begin
+        if pVsrc.ClassNameIs('TVSourceObj') then
         begin
-            if pVsrc.ClassNameIs('TVSourceObj') then // pIsrc are in the same list
-            begin
-                pVsrc.DumpPropertiesCSV(F);
-                Writeln(F);
+            try
+                Assignfile(F, GetOutputDirectory + 'VSource.csv');
+                ReWrite(F);
+
+                Writeln(F, 'name,enabled,n_phases,n_conds,base_freq,terminal1,terminal2,base_kv,per_unit,angle,src_frequency,z_spec_type,mva_sc3,mva_sc1,i_sc3,i_sc1,r1,x1,r2,x2,r0,x0,x1r1,x0r0,scan_type,sequence_type,spectrum');
+
+                while pVsrc <> NIL do
+                begin
+                    if pVsrc.ClassNameIs('TVSourceObj') then // pIsrc are in the same list
+                    begin
+                        pVsrc.DumpPropertiesCSV(F);
+                        Writeln(F);
+                    end;
+                    pVsrc := ActiveCircuit[ActiveActor].Sources.Next;
+                end;
+            finally
+                CloseFile(F);
             end;
+            break;
+        end
+        else
             pVsrc := ActiveCircuit[ActiveActor].Sources.Next;
-        end;
-    finally
-        CloseFile(F);
     end;
 
-    pLine := ActiveCircuit[ActiveActor].Lines.First;
-    if pLine <> NIL then
-    try
-        Assignfile(F, GetOutputDirectory + 'Line.csv');
-        ReWrite(F);
-
-        Writeln(F, 'name,enabled,n_phases,n_conds,base_freq,terminal1,terminal2,length,units,line_code,geometry');
-
-        while pLine <> NIL do
+    pIsrc := ActiveCircuit[ActiveActor].Sources.First;
+    while pVsrc <> NIL do
+    begin
+        if pVsrc.ClassNameIs('TISourceObj') then
         begin
-            pLine.DumpPropertiesCSV(F);
-            Writeln(F);
-            pLine := ActiveCircuit[ActiveActor].Lines.Next;
-        end;
-    finally
-        CloseFile(F);
+            try
+                Assignfile(F, GetOutputDirectory + 'ISource.csv');
+                ReWrite(F);
+
+                Writeln(F, 'name,enabled,n_phases,n_conds,base_freq,terminal1,terminal2,amps,angle,src_frequency,spectrum');
+
+                while pIsrc <> NIL do
+                begin
+                    if pIsrc.ClassNameIs('TISourceObj') then // pVsrc are in the same list
+                    begin
+                        pIsrc.DumpPropertiesCSV(F);
+                        Writeln(F);
+                    end;
+                    pIsrc := ActiveCircuit[ActiveActor].Sources.Next;
+                end;
+            finally
+                CloseFile(F);
+            end;
+            break;
+        end
+        else
+            pIsrc := ActiveCircuit[ActiveActor].Sources.Next;
     end;
 
     pLoad := ActiveCircuit[ActiveActor].Loads.First;
@@ -113,6 +144,100 @@ begin
             pLoad.DumpPropertiesCSV(F);
             Writeln(F);
             pLoad := ActiveCircuit[ActiveActor].Loads.Next;
+        end;
+    finally
+        CloseFile(F);
+    end;
+
+    pGen := ActiveCircuit[ActiveActor].Generators.First;
+    if pGen <> NIL then
+    try
+        Assignfile(F, GetOutputDirectory + 'Generator.csv');
+        ReWrite(F);
+
+        Writeln(F, 'name,enabled,n_phases,n_conds,base_freq,terminal,kv,kw,pf,model,connection,duty,fixed,v_min_pu,v_max_pu,max_kvar,min_kvar,balanced,spectrum');
+
+        while pGen <> NIL do
+        begin
+            pGen.DumpPropertiesCSV(F);
+            Writeln(F);
+            pGen := ActiveCircuit[ActiveActor].Generators.Next;
+        end;
+    finally
+        CloseFile(F);
+    end;
+
+    pElem := ActiveCircuit[ActiveActor].PDElements.First;
+    while pElem <> NIL do
+    begin
+        if (CLASSMASK and pElem.DSSObjType) = CAP_ELEMENT then
+        begin
+            try
+                Assignfile(F, GetOutputDirectory + 'Capacitor.csv');
+                ReWrite(F);
+
+                Writeln(F, 'name,enabled,n_phases,n_conds,base_freq,terminal1,terminal2,connection,num_steps,spec_type,kvar,kv,c,r,xl');
+
+                while pElem <> NIL do
+                begin
+                    if (CLASSMASK and pElem.DSSObjType) = CAP_ELEMENT then
+                    begin
+                        pElem.DumpPropertiesCSV(F);
+                        Writeln(F);
+                    end;
+                    pElem := ActiveCircuit[ActiveActor].PDElements.Next;
+                end;
+            finally
+                CloseFile(F);
+            end;
+            break;
+        end
+        else
+            pElem := ActiveCircuit[ActiveActor].PDElements.Next;
+    end;
+
+    pElem := ActiveCircuit[ActiveActor].PDElements.First;
+    while pElem <> NIL do
+    begin
+        if (CLASSMASK and pElem.DSSObjType) = REACTOR_ELEMENT then
+        begin
+            try
+                Assignfile(F, GetOutputDirectory + 'Reactor.csv');
+                ReWrite(F);
+
+                Writeln(F, 'name,enabled,n_phases,n_conds,base_freq,terminal1,terminal2,connection,spec_type,kvar,kv,r,x');
+
+                while pElem <> NIL do
+                begin
+                    if (CLASSMASK and pElem.DSSObjType) = REACTOR_ELEMENT then
+                    begin
+                        pElem.DumpPropertiesCSV(F);
+                        Writeln(F);
+                    end;
+                    pElem := ActiveCircuit[ActiveActor].PDElements.Next;
+                end;
+            finally
+                CloseFile(F);
+            end;
+            break;
+        end
+        else
+            pElem := ActiveCircuit[ActiveActor].PDElements.Next;
+    end;
+
+    pLine := ActiveCircuit[ActiveActor].Lines.First;
+    if pLine <> NIL then
+    try
+        Assignfile(F, GetOutputDirectory + 'Line.csv');
+        ReWrite(F);
+
+        Writeln(F, 'name,enabled,n_phases,n_conds,base_freq,terminal1,terminal2,length,units,line_code,geometry');
+
+        while pLine <> NIL do
+        begin
+            pLine.DumpPropertiesCSV(F);
+            Writeln(F);
+            pLine := ActiveCircuit[ActiveActor].Lines.Next;
         end;
     finally
         CloseFile(F);

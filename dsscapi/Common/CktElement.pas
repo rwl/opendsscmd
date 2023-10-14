@@ -1087,21 +1087,10 @@ begin
 end;
 
 procedure TDSSCktElement.DumpPropertiesCSV(var F: TextFile);
-
-var
-    i, j: Integer;
-
 begin
-
     inherited DumpPropertiesCSV(F);
 
-    if FEnabled then
-        Write(F, ',true')
-    else
-        Write(F, ',false');
-
-    Write(F, Format(',%d,%d,%g', [Fnphases, Fnconds, BaseFrequency]));
-
+    Write(F, Format(',%s,%d,%d,%g', [BoolToString(FEnabled), Fnphases, Fnconds, BaseFrequency]));
 end;
 
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

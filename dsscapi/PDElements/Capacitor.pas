@@ -122,6 +122,7 @@ type
 
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
         function GetPropertyValue(Index: Integer): String; OVERRIDE;
 
         function AddStep(ActorID: Integer): Boolean;
@@ -819,6 +820,53 @@ begin
         end;
     end;
 
+end;
+
+procedure TCapacitorObj.DumpPropertiesCSV(var F: TextFile);
+
+var
+    i: Integer;
+
+begin
+    inherited DumpPropertiesCSV(F);
+
+    Write(F, Format(',%s', [FirstBus]));
+
+    if Bus2Defined then
+        Write(F, Format(',%s', [NextBus]))
+    else
+        Write(F, ',');
+
+    Write(F, Format(',%s,%d', [ConnectionToString(Connection), NumSteps]));
+
+    case SpecType of
+        1:
+            Write(F, ',kvar');
+        2:
+            Write(F, ',cuf');
+    end;
+
+    Write(F, ',[');
+    for i := 1 to NumSteps do
+        Write(F, Format(' %.16g', [FkvarRating^[i]]));
+    Write(F, ' ]');
+
+    Write(F, Format(',%.16g', [kvrating]));
+
+    Write(F, ',[');
+    for i := 1 to NumSteps do
+        Write(F, Format(' %.16g', [FC^[i]]));
+    Write(F, ' ]');
+
+    Write(F, ',[');
+    for i := 1 to NumSteps do
+        Write(F, Format(' %.16g', [FR^[i]]));
+    Write(F, ' ]');
+
+    Write(F, ',[');
+    for i := 1 to NumSteps do
+        Write(F, Format(' %.16g', [FXL^[i]]));
+    Write(F, ' ]');
 end;
 
 

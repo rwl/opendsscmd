@@ -301,6 +301,7 @@ type
 
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
         function GetPropertyValue(Index: Integer): String; OVERRIDE;
 
         property PresentkW: Double READ Get_PresentkW WRITE Set_PresentkW;
@@ -2577,6 +2578,32 @@ begin
 
     Writeln(F);
 
+end;
+
+procedure TGeneratorObj.DumpPropertiesCSV(var F: TextFile);
+begin
+    inherited DumpPropertiesCSV(F);
+
+    Write(F, Format(',%s,%.16g,%.16g,%.16g', [FirstBus, PresentkV, kWBase, PFNominal]));
+
+    case GenModel of
+        1:
+            Write(F, ',kw_pf');
+        2:
+            Write(F, ',const_z');
+        3:
+            Write(F, ',kw_kv');
+        4:
+            Write(F, ',kw_q');
+        5:
+            Write(F, ',kw_qz');
+        6:
+            Write(F, ',kw_kvar_i');
+    end;
+
+    Write(F, Format(',%s,%s,%s,%.16g,%.16g,%.16g,%.16g,%s,%s',
+        [ConnectionToString(Connection), DutyShape, BoolToString(IsFixed), Vminpu, Vmaxpu, kvarMax, kvarMin, 
+        BoolToString(ForceBalanced), Spectrum]));
 end;
 
 

@@ -686,14 +686,7 @@ var
 begin
     inherited DumpPropertiesCSV(F);
 
-    Write(F, Format(',%d,%d', [FNPhases, FNConds]));
-
-    if FReduce then
-        Write(F, ',true')
-    else
-        Write(F, ',false');
-
-    Write(F, Format(',%.16g', [RhoEarth]));
+    Write(F, Format(',%d,%d,%s,%.16g', [FNPhases, FNConds, BoolToString(FReduce), RhoEarth]));
 
     Write(F, ',[');
     for i := 1 to FNConds do

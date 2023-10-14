@@ -131,6 +131,7 @@ type
         function GetPropertyValue(Index: Integer): String; OVERRIDE;
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
 
                 // CIM XML access - this is only tested for the IEEE 8500-node feeder
         property SimpleR: Double READ R;
@@ -1145,6 +1146,33 @@ begin
             end;
         end;
 
+end;
+
+procedure TReactorObj.DumpPropertiesCSV(var F: TextFile);
+
+var
+    i: Integer;
+
+begin
+    inherited DumpPropertiesCSV(F);
+
+    Write(F, Format(',%s', [FirstBus]));
+
+    if Bus2Defined then
+        Write(F, Format(',%s', [NextBus]))
+    else
+        Write(F, ',');
+
+    Write(F, Format(',%s', [ConnectionToString(Connection)]));
+
+    case SpecType of
+        1:
+            Write(F, ',kvar');
+        2:
+            Write(F, ',z');
+    end;
+
+    Write(F, Format(',%.16g,%.16g,%.16g', [kvarRating, kvRating, R, X]));
 end;
 
 procedure TReactorObj.GetLosses(var TotalLosses, LoadLosses, NoLoadLosses: Complex; ActorID: Integer);

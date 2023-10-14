@@ -1539,14 +1539,8 @@ begin
         Write(F, Format('%s,%d,%s', [Name, i, BusName]));
         with Winding^[i] do
         begin
-            case Connection of
-                0:
-                    Write(F, ',wye');
-                1:
-                    Write(F, ',delta');
-            end;
-            Write(F, Format(',%.16g,%.16g,%.16g,%.16g,%.16g,%.16g,%.16g,%.16g,%d',
-                [kVLL, kVA, puTap, Rpu, Rneut, Xneut, MaxTap, MinTap, NumTaps]));
+            Write(F, Format(',%s,%.16g,%.16g,%.16g,%.16g,%.16g,%.16g,%.16g,%.16g,%d',
+                [ConnectionToString(Connection), kVLL, kVA, puTap, Rpu, Rneut, Xneut, MaxTap, MinTap, NumTaps]));
             Writeln(F);
             BusName := NextBus;
         end;
