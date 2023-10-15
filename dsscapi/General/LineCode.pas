@@ -270,7 +270,7 @@ begin
     Result := '[';
     for i := 1 to FNPhases do
     begin
-        for j := 1 to FNphases do
+        for j := 1 to i do
         begin
             Result := Result + Format('%12.8f ', [Z.GetElement(i, j).re]);
         end;
@@ -288,7 +288,7 @@ begin
     Result := '[';
     for i := 1 to FNPhases do
     begin
-        for j := 1 to FNphases do
+        for j := 1 to i do
         begin
             Result := Result + Format('%12.8f ', [Z.GetElement(i, j).im]);
         end;
@@ -305,7 +305,7 @@ begin
     Result := '[';
     for i := 1 to FNPhases do
     begin
-        for j := 1 to FNphases do
+        for j := 1 to i do
         begin
             Result := Result + Format('%12.8f ', [Yc.GetElement(i, j).im / TwoPi / BaseFrequency * 1.0E9]);
         end;

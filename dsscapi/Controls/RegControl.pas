@@ -153,6 +153,7 @@ type
         function GetPropertyValue(Index: Integer): String; OVERRIDE;
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
         procedure SaveWrite(var F: TextFile); OVERRIDE;
 
         property Transformer: TTransfObj READ Get_Transformer;  // Pointer to controlled Transformer
@@ -867,6 +868,26 @@ begin
     end;
 
 end;
+
+procedure TRegControlObj.DumpPropertiesCSV(var F: TextFile);
+
+var
+    Transformer: String;
+    Bus: String;
+    BusNode: String;
+
+begin
+    // inherited DumpPropertiesCSV(F);
+
+    Transformer := StripClassName(ElementName);
+    Bus := StripExtension(RegulatedBus);
+    BusNode := StripClassName(RegulatedBus);
+
+    Write(F, Format('%s,%d,%.16g,%.16g,%.16g,%.16g,%.16g,%.16g,%s,%s,%.16g,%.16g,%d,%d,%.16g',
+        [Transformer, ElementTerminal, Vreg, Bandwidth, PTRatio, CTRating, R, X, Bus, BusNode,
+        TimeDelay, Vlimit, TapLimitPerChange, FPTPhase, RemotePTRatio]));
+end;
+
 
 {--------------------------------------------------------------------------}
 function TRegControlObj.AtLeastOneTap(const ProposedChange: Double; Increment: Double; ActorID: Integer): Double;
