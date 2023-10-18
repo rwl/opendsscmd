@@ -382,6 +382,7 @@ type
         function GetPropertyValue(Index: Integer): String; OVERRIDE;
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
 
     end;
 
@@ -2269,6 +2270,21 @@ begin
 
     end;
 
+end;
+
+procedure TEnergyMeterObj.DumpPropertiesCSV(var F: TextFile);
+
+var
+    i: Integer;
+
+begin
+    Write(F, Format('%s,%s,%s,%d,%s,%s,%s,%.16g,%.16g', [Name, BoolToString(Enabled), ElementName, MeteredTerminal,
+        BoolToString(ExcessFlag), BoolToString(ZoneIsRadial), BoolToString(VoltageUEOnly), MaxZonekVA_Norm, MaxZonekVA_Emerg]));
+
+    Write(F, ',[');
+    for i := 1 to Fnphases do
+        Write(F, Format(' %.16g', [SensorCurrent^[i]]));
+    Write(F, ' ]');
 end;
 
 procedure TEnergyMeter.ProcessOptions(const Opts: String);

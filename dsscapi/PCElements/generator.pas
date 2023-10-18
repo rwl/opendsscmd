@@ -2599,6 +2599,8 @@ begin
             Write(F, ',kw_qz');
         6:
             Write(F, ',kw_kvar_i');
+        else
+            Write(F, ',');
     end;
 
     Write(F, Format(',%s,%s,%s,%.16g,%.16g,%.16g,%.16g,%s,%s',

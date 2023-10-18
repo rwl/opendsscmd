@@ -844,6 +844,8 @@ begin
             Write(F, ',kvar');
         2:
             Write(F, ',cuf');
+        else
+            Write(F, ',');
     end;
 
     Write(F, ',[');

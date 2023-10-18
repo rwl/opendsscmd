@@ -1170,6 +1170,8 @@ begin
             Write(F, ',kvar');
         2:
             Write(F, ',z');
+        else
+            Write(F, ',');
     end;
 
     Write(F, Format(',%.16g,%.16g,%.16g', [kvarRating, kvRating, R, X]));

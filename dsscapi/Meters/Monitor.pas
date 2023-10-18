@@ -203,6 +203,7 @@ type
         procedure GetInjCurrents(Curr: pComplexArray; ActorID: Integer); OVERRIDE;   // Returns Injextion currents
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
         function Get_FileName(ActorID: Integer): String;
        //Property  MonitorFileName:String read BufferFile;
 
@@ -1938,6 +1939,45 @@ begin
         Writeln(F);
     end;
 
+end;
+
+procedure TMonitorObj.DumpPropertiesCSV(var F: TextFile);
+begin
+    Write(F, Format('%s,%s,%s,%d', [Name, BoolToString(Enabled), ElementName, MeteredTerminal]));
+
+    case (Mode and MODEMASK) of
+        0:
+        begin
+            Write(F, ',voltage_current');
+        end;
+        1:
+        begin
+            Write(F, ',power');
+        end;
+        2:
+        begin
+            Write(F, ',tap_position');
+        end;
+        3:
+        begin
+            Write(F, ',state_variables');
+        end;
+        4:
+        begin
+            Write(F, ',flicker_pst');
+        end;
+        5:
+        begin
+            Write(F, ',solution');
+        end;
+        6:
+        begin
+            Write(F, ',capacitor_switching');
+        end;
+    end;
+
+    Write(F, Format(',%s,%s,%s,%s,%s', [BoolToString((Mode and SEQUENCEMASK) > 0), BoolToString((Mode and MAGNITUDEMASK) > 0),
+        BoolToString((Mode and POSSEQONLYMASK) > 0), BoolToString(IncludeResidual), BoolToString(Ppolar)]));
 end;
 
 procedure TMonitorObj.InitPropertyValues(ArrayOffset: Integer);

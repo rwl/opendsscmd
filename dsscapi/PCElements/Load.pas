@@ -2434,6 +2434,8 @@ begin
             Write(F, ',fixed_qz');
         8:
             Write(F, ',zipv');
+        else
+            Write(F, ',');
     end;
 
     Write(F, Format(',%.16g,%.16g,%.16g,%.16g,%s', [Vminpu, Vmaxpu, Rneut, Xneut, ConnectionToString(Connection)]));
@@ -2445,6 +2447,12 @@ begin
             Write(F, ',kw_kvar');
         2:
             Write(F, ',kva_pf');
+        3:
+            Write(F, ',allocation_factor');
+        4:
+            Write(F, ',c_factor');
+        else
+            Write(F, ',');
     end;
 
     if Fixed then

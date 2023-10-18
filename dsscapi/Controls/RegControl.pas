@@ -881,7 +881,8 @@ begin
 
     Transformer := StripClassName(ElementName);
     Bus := StripExtension(RegulatedBus);
-    BusNode := StripClassName(RegulatedBus);
+    if Bus <> RegulatedBus then
+        BusNode := StripClassName(RegulatedBus);
 
     Write(F, Format('%s,%d,%.16g,%.16g,%.16g,%.16g,%.16g,%.16g,%s,%s,%.16g,%.16g,%d,%d,%.16g',
         [Transformer, ElementTerminal, Vreg, Bandwidth, PTRatio, CTRating, R, X, Bus, BusNode,

@@ -1326,6 +1326,8 @@ begin
             Write(F, ',i_sc');
         3:
             Write(F, ',z1_z0');
+        else
+            Write(F, ',');
     end;
 
     Write(F, Format(',%.16g,%.16g,%.16g,%g,%.16g,%.16g,%.16g,%.16g,%.16g,%.16g,%.16g,%.16g', 
@@ -1338,6 +1340,8 @@ begin
             Write(F, ',zero');
         -1:
             Write(F, ',none');
+        else
+            Write(F, ',');
     end;
 
     case SequenceType of
@@ -1347,6 +1351,8 @@ begin
             Write(F, ',zero');
         -1:
             Write(F, ',negative');
+        else
+            Write(F, ',');
     end;
 
     Write(F, Format(',%s', [Spectrum]));

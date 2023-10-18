@@ -1312,10 +1312,6 @@ begin
 end;
 
 procedure TLineObj.DumpPropertiesCSV(var F: TextFile);
-
-var
-    i: Integer;
-
 begin
     inherited DumpPropertiesCSV(F);
 

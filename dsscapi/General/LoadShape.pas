@@ -135,6 +135,7 @@ type
         function GetPropertyValue(Index: Integer): String; OVERRIDE;
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
 
         property NumPoints: Integer READ FNumPoints WRITE FNumPoints;
         property PresentInterval: Double READ Get_Interval;
@@ -1073,6 +1074,14 @@ begin
 
 
 end;
+
+procedure TLoadShapeObj.DumpPropertiesCSV(var F: TextFile);
+begin
+    inherited DumpPropertiesCSV(F);
+
+    Write(F, Format(',%d,%.16g,%.16g,%.16g,%s', [FNumPoints, Interval, Mean, StdDev, BoolToString(UseActual)]));
+end;
+
 
 function TLoadShapeObj.GetPropertyValue(Index: Integer): String;
 begin

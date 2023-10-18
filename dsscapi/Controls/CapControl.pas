@@ -108,6 +108,7 @@ type
 
         procedure InitPropertyValues(ArrayOffset: Integer); OVERRIDE;
         procedure DumpProperties(var F: TextFile; Complete: Boolean); OVERRIDE;
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
 
         property This_Capacitor: TCapacitorObj READ Get_Capacitor;  // Pointer to controlled Capacitor
         property PendingChange: EControlAction READ Get_PendingChange WRITE Set_PendingChange;
@@ -830,6 +831,32 @@ begin
         Writeln(F);
     end;
 
+end;
+
+procedure TCapControlObj.DumpPropertiesCSV(var F: TextFile);
+begin
+    // inherited DumpPropertiesCSV(F);
+
+    Write(F, Format('%s,%s,%d', [LowerCase(StripClassName(ControlVars.CapacitorName)), ElementName, ElementTerminal]));
+
+    case ControlType of
+        CURRENTCONTROL:
+            Write(F, ',current');
+        VOLTAGECONTROL:
+            Write(F, ',voltage');
+        KVARCONTROL:
+            Write(F, ',kvar');
+        PFCONTROL:
+            Write(F, ',pf');
+        TIMECONTROL:
+            Write(F, ',time');
+        USERCONTROL:
+            Write(F, ',user');
+    end;
+
+    Write(F, Format(',%.16g,%.16g,%.16g,%.16g,%.16g,%.16g,%d,%d,%.16g',
+        [ControlVars.PTRatio, ControlVars.CTRatio, ControlVars.OFF_Value, ControlVars.ON_Value, ControlVars.ONDelay,
+        ControlVars.DeadTime, ControlVars.FCTPhase, ControlVars.FPTPhase, FpctMinKvar]));
 end;
 
 

@@ -1516,10 +1516,6 @@ begin
 end;
 
 procedure TTransfObj.DumpPropertiesCSV(var F: TextFile);
-
-var
-    i: Integer;
-
 begin
     inherited DumpPropertiesCSV(F);
 
