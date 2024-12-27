@@ -1220,10 +1220,10 @@ begin
         end;
 
 
-        Writeln(ParentClass.Name, '.', Name, ' Vterminal: ');
-        for i := 1 to Yorder do
-            Write(Format('%.9g∠%.9g°, ', [Cabs(VTerminal^[i]), Cdang(VTerminal^[i])]));
-        Writeln();
+        // Writeln(ParentClass.Name, '.', Name, ' Vterminal: ');
+        // for i := 1 to Yorder do
+        //     Write(Format('%.9g∠%.9g°, ', [Cabs(VTerminal^[i]), Cdang(VTerminal^[i])]));
+        // Writeln();
 
 
     except
@@ -1311,10 +1311,10 @@ begin
     GetVterminalForSource(ActorID);  // gets voltage vector above
     YPrim.MVMult(Curr, Vterminal);
 
-    Writeln(ParentClass.Name, '.', Name, ' I_inj: ');
-    for i := 1 to Yorder do
-        Write(Format('%.9g∠%.9g°, ', [Cabs(Curr^[i]), Cdang(Curr^[i])]));
-    Writeln();
+    // Writeln(ParentClass.Name, '.', Name, ' I_inj: ');
+    // for i := 1 to Yorder do
+    //     Write(Format('%.9g∠%.9g°, ', [Cabs(Curr^[i]), Cdang(Curr^[i])]));
+    // Writeln();
 
     set_ITerminalUpdated(FALSE, ActorID);
 
