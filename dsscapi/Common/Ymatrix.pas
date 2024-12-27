@@ -217,14 +217,20 @@ begin
                         SERIESONLY:
                             ActiveYPrim[ActorID] := GetYPrimValues(SERIES)
                     end;
-
-                    for i := 1 to Yorder do
-                    begin
-                        for j := 1 to Yorder do
-                            Write(Format('%g, %g, ', [ActiveYPrim[ActorID]^[i + (j - 1) * Yorder].re, ActiveYPrim[ActorID]^[i + (j - 1) * Yorder].im]));
-                        Writeln();
+{$IFDEF DEBUG1}
+                    if ActiveYPrim[ActorID] <> NIL then
+                        begin
+                        Writeln(ParentClass.Name, '.', Name);
+                        for i := 1 to Yorder do
+                        begin
+                            for j := 1 to Yorder do
+                            begin
+                                Write(Format('%.9g+%.9gi, ', [ActiveYPrim[ActorID]^[i + (j - 1) * Yorder].re, ActiveYPrim[ActorID]^[i + (j - 1) * Yorder].im]));
+                            end;
+                            Writeln();
+                        end;
                     end;
-
+{$ENDIF}
            // new function adding primitive Y matrix to KLU system Y matrix
                     if ActiveYPrim[ActorID] <> NIL then
                         if AddPrimitiveMatrix(hY, Yorder, @NodeRef[1], @ActiveYPrim[ActorID][1]) < 1 then
