@@ -16,6 +16,7 @@ uses
     DSSGlobals,
     Circuit,
     Bus,
+    Line,
     Utilities,
     CktElement,
     Transformer,
@@ -27,9 +28,14 @@ var
 
     pCls: TDSSClass;
     pElem: TDSSCktElement;
+    pLine: TLine;
 
 begin
-    pCls := DSSClassList[ActiveActor].Get(ClassNames[ActiveActor].Find(ClassName));
+    if (ClassName = 'Switch') then
+        pCls := DSSClassList[ActiveActor].Get(ClassNames[ActiveActor].Find('Line'))
+    else begin
+        pCls := DSSClassList[ActiveActor].Get(ClassNames[ActiveActor].Find(ClassName));
+    end;
     pElem := pCls.ElementList.First;
     if pElem <> NIL then
     try
@@ -42,6 +48,25 @@ begin
         begin
             if (ClassName = 'LoadShape') and (pElem.Name = 'default') then
             else begin
+                if (ClassName = 'Switch') and (not TLineObj(pElem).IsSwitch) then begin
+                  pElem := pCls.ElementList.Next;
+                  continue;
+                end;
+                if (ClassName = 'Line') and TLineObj(pElem).IsSwitch then begin 
+                  pElem := pCls.ElementList.Next;
+                  continue;
+                end;
+                // if (ClassName = 'Switch') then
+                //     if not TLine(pElem).IsSwitch then continue;
+                // else if (ClassName = 'Line') then
+                //     if TLine(pElem).IsSwitch then continue;
+                // if (ClassName = 'Switch') then begin
+                //     pLine = pElem;
+                //     if not pLine.IsSwitch then continue;
+                // if (ClassName = 'Line') then begin
+                //     pLine = pElem;
+                //     if pLine.IsSwitch then continue;
+                // end
                 pElem.DumpPropertiesCSV(F);
                 Writeln(F);
             end;
@@ -86,7 +111,8 @@ begin
 
     ExportDSSClassCKV('Capacitor', CktElemHeader + ',terminal1,terminal2,connection,num_steps,spec_type,kvar,kv,c,r,xl');
     ExportDSSClassCKV('Reactor', CktElemHeader + ',terminal1,terminal2,connection,spec_type,kvar,kv,r,x');
-    ExportDSSClassCKV('Line', CktElemHeader + ',terminal1,terminal2,length,units,line_code,geometry');
+    ExportDSSClassCKV('Line', CktElemHeader + ',terminal1,terminal2,length,units,switch,line_code,geometry');
+    ExportDSSClassCKV('Switch', CktElemHeader + ',terminal1,terminal2,length,units,switch,line_code,geometry');
     ExportDSSClassCKV('Transformer', CktElemHeader + ',x_hl,x_ht,x_lt,pct_load_loss,ppm_anti_float');
 
     ExportDSSClassCKV('RegControl', 'transformer,winding,v_reg,bandwidth,pt_ratio,ct_rating,r,x,bus,bus_node,delay,v_limit,max_tap_change,pt_phase,remote_pt_ratio');

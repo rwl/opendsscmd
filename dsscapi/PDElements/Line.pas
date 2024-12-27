@@ -1315,7 +1315,7 @@ procedure TLineObj.DumpPropertiesCSV(var F: TextFile);
 begin
     inherited DumpPropertiesCSV(F);
 
-    Write(F, Format(',%s,%s,%.16g,%s,%s,%s', [FirstBus, NextBus, Len, LineUnitsStr(LengthUnits), CondCode, GeometryCode]));
+    Write(F, Format(',%s,%s,%.16g,%s,%s,%s,%s', [FirstBus, NextBus, Len, LineUnitsStr(LengthUnits), BoolToString(IsSwitch), CondCode, GeometryCode]));
 end;
 
 {*********** Placeholder for Line module No Load Loss procedure *********}

@@ -93,6 +93,7 @@ function Str_Real(const Value: Double; NumDecimals: Integer): String;
 procedure DumpAllDSSCommands(var Filename: String);
 procedure DumpAllocationFactors(var Filename: String);
 procedure DumpComplexMatrix(var F: TextFile; AMatrix: TcMatrix);
+procedure WriteComplexMatrix(const Msg: String; AMatrix: TcMatrix);
 function NearestBasekV(kV: Double): Double;
 function PresentTimeInSec(ActorID: Integer): Double;
 function DoResetFaults: Integer;
@@ -2057,6 +2058,38 @@ begin
         On E: Exception do
         begin
             DoSimpleMsg('Error in Dump Complex Matrix: ' + E.message + '  Write aborted.', 716);
+        end;
+
+    end;
+
+
+end;
+
+
+procedure WriteComplexMatrix(const Msg: String; AMatrix: TcMatrix);
+
+var
+    i, j: Integer;
+
+begin
+    try
+        if AMatrix <> NIL then
+        begin
+            Writeln(Msg);
+            with AMatrix do
+            begin
+                for i := 1 to Order do
+                begin
+                    for j := 1 to i do
+                        Write(Format('%.9g+%.9g ', [GetElement(i, j).re, GetElement(i, j).im]));
+                    Writeln();
+                end;
+            end;
+        end;
+    except
+        On E: Exception do
+        begin
+            DoSimpleMsg('Error in Write Complex Matrix: ' + E.message + '  Write aborted.', 716);
         end;
 
     end;

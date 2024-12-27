@@ -23,6 +23,6 @@ RUN ln -sv /lib/x86_64-linux-gnu/libgcc_s.so.1 /lib/x86_64-linux-gnu/libgcc_s.so
 #COPY lib/opendss /usr/src/opendss
 COPY dsscapi /usr/src/opendss
 
-RUN make -C /usr/src/opendss clean check install
+RUN make PREFIX=/usr/local -C /usr/src/opendss clean check install
 
 ENTRYPOINT ["opendsscmd"]

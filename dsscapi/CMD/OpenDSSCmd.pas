@@ -56,6 +56,7 @@ uses
   EventQueue in '..\Common\EventQueue.pas',
   ExportCIMXML in '..\Common\ExportCIMXML.pas',
   ExportResults in '..\Common\ExportResults.pas',
+  ExportCSV in '..\Common\ExportCSV.pas',
   Feeder in '..\Common\Feeder.pas',
   KLUSolve in '..\Common\KLUSolve.pas',
   Notes in '..\Common\Notes.pas',

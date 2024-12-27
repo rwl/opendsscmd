@@ -727,7 +727,7 @@ Begin
            {Create a default Circuit}
            SolutionABort              := FALSE;
            {Voltage source named "source" connected to SourceBus}
-//           DSSExecutive[ActiveActor].Command       := 'New object=vsource.source Bus1=SourceBus ' + S;  // Load up the parser as if it were read in
+           DSSExecutive[ActiveActor].Command       := 'New object=vsource.source Bus1=SourceBus ' + S;  // Load up the parser as if it were read in
            // Creates the thread for the actor if not created before
            If ActorHandle[ActiveActor]  = nil then New_Actor(ActiveActor);
 

@@ -47,6 +47,8 @@ type
         procedure DoPendingAction(const Code, ProxyHdl: Integer; ActorID: Integer); VIRTUAL;   // Do the action that is pending from last sample
         procedure Reset; VIRTUAL;
 
+        procedure DumpPropertiesCSV(var F: TextFile); OVERRIDE;
+
         property ControlledElement: TDSSCktElement READ FControlledElement WRITE Set_ControlledElement;
         property MonitoredElement: TDSSCktElement READ FMonitoredElement WRITE Set_MonitoredElement;
 
@@ -118,6 +120,12 @@ procedure TControlElem.Sample(ActorID: Integer);
 begin
   // virtual function - should be overridden
     DoSimpleMsg('Programming Error:  Reached base class for Sample.' + CRLF + 'Device: ' + DSSClassName + '.' + Name, 462);
+end;
+
+
+procedure TControlElem.DumpPropertiesCSV(var F: TextFile);
+begin
+    inherited DumpPropertiesCSV(F);
 end;
 
 

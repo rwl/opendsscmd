@@ -13,7 +13,7 @@ uses
     Command;
 
 const
-    NumExportOptions = 61;
+    NumExportOptions = 62;
 
 function DoExportCmd: Integer;
 
@@ -27,6 +27,7 @@ implementation
 
 uses
     ExportResults,
+    ExportCSV,
     Monitor,
     EnergyMeter,
     ParserDel,
@@ -108,6 +109,7 @@ begin
     ExportOption[59] := 'ZCC';
     ExportOption[60] := 'Contours';
     ExportOption[61] := 'Y4';
+    ExportOption[62] := 'CSV';
 
     ExportHelp[1] := '(Default file = EXP_VOLTAGES.CSV) Voltages to ground by bus/node.';
     ExportHelp[2] := '(Default file = EXP_SEQVOLTAGES.CSV) Sequence voltages.';
@@ -178,6 +180,7 @@ begin
     ExportHelp[59] := 'Exports the connectivity matrix (ZCC) calculated after initilizing A-Diakoptics. The output format is compressed coordianted and the values are complex conjugates.  If A-Diakoptics is not initialized this command does nothing';
     ExportHelp[60] := 'Exports the Contours matrix (C) calculated after initilizing A-Diakoptics. The output format is compressed coordianted and the values are integers.  If A-Diakoptics is not initialized this command does nothing';
     ExportHelp[61] := 'Exports the inverse of Z4 (ZCC) calculated after initilizing A-Diakoptics. The output format is compressed coordianted and the values are complex conjugates.  If A-Diakoptics is not initialized this command does nothing';
+    ExportHelp[62] := 'Exports all circuit elements in CSV format.';
 end;
 
 //----------------------------------------------------------------------------
@@ -485,6 +488,8 @@ begin
                 FileName := 'C.csv';
             61:
                 FileName := 'Y4.csv';
+            62:
+                FileName := 'Circuit.csv';
 
         else
             FileName := 'EXP_VOLTAGES.CSV';    // default
@@ -656,6 +661,8 @@ begin
             ExportC(FileName);
         61:
             ExportY4(FileName);
+        62:
+            ExportCKV(FileName);
 
     else
         // ExportVoltages(FileName);    // default

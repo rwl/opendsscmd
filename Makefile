@@ -8,7 +8,7 @@ all: build
 
 .PHONY: build
 build:
-	docker build --target $(TARGET) -t $(TAG) .
+	docker build --progress=plain --target $(TARGET) -t $(TAG) .
 
 .PHONY: run
 run:

@@ -7,7 +7,8 @@ Clear
 
 new circuit.IEEE13Nodeckt
 
-New object=vsource.source Bus1=SourceBus
+! New object=vsource.source Bus1=SourceBus
+~ Bus1=SourceBus
 ~ basekv=115 pu=1.0001 phases=3 bus1=SourceBus  
 ~ Angle=30                                                         ! advance angle 30 deg so result agree with published angle
 ~ MVAsc3=20000 MVASC1=21000    ! stiffen the source to approximate inf source
@@ -180,3 +181,5 @@ Set Controlmode=OFF
 
 Solve
 */
+
+export csv
