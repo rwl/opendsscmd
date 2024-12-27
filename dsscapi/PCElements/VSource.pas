@@ -63,7 +63,7 @@ type
         puZ1, puZ0, puZ2: Complex;
         ZBase: Double;
 
-        Bus2Defined,
+        // Bus2Defined,
         Z1Specified,
         puZ1Specified,
         puZ0Specified,
@@ -95,6 +95,8 @@ type
         PerUnit: Double;
         Angle: Double;
         SrcFrequency: Double;
+
+        Bus2Defined: Boolean;
 
         DailyShape: String;         // Daily (24 HR) load shape
         DailyShapeObj: TLoadShapeObj;  // Daily load Shape FOR this load
@@ -1047,6 +1049,18 @@ begin
             end;
     end;
 
+
+    // Writeln(ParentClass.Name, '.', Name, ' Z: ');
+    // for i := 1 to Fnphases do
+    // begin
+    //     for j := 1 to Fnphases do
+    //     begin
+    //         Write(Format('%.9g+%.9gi, ', [Zinv.GetElement(i, j).re, Zinv.GetElement(i, j).im]));
+    //     end;
+    //     Writeln();
+    // end;
+
+
     Zinv.Invert;  {Invert in place}
 
     if Zinv.InvertError > 0 then
@@ -1057,6 +1071,18 @@ begin
         for i := 1 to Fnphases do
             Zinv.SetElement(i, i, Cmplx(1.0 / EPSILON, 0.0));
     end;
+
+
+    // Writeln(ParentClass.Name, '.', Name, ' Zinv: ');
+    // for i := 1 to Fnphases do
+    // begin
+    //     for j := 1 to Fnphases do
+    //     begin
+    //         Write(Format('%.9g+%.9gi, ', [Zinv.GetElement(i, j).re, Zinv.GetElement(i, j).im]));
+    //     end;
+    //     Writeln();
+    // end;
+
 
    // YPrim_Series.CopyFrom(Zinv);
 
@@ -1193,6 +1219,13 @@ begin
 
         end;
 
+
+        Writeln(ParentClass.Name, '.', Name, ' Vterminal: ');
+        for i := 1 to Yorder do
+            Write(Format('%.9g∠%.9g°, ', [Cabs(VTerminal^[i]), Cdang(VTerminal^[i])]));
+        Writeln();
+
+
     except
         DoSimpleMsg('Error computing Voltages for Vsource.' + Name + '. Check specification. Aborting.', 326);
         if In_Redirect then
@@ -1232,10 +1265,22 @@ begin
 
             YPrim.MVMult(Curr, Vterminal);  // Current from Elements in System Y
 
+
+            // Write('VSource Iprim: ');
+            // for i := 1 to Yorder do
+            //     Write(Format('%.9g∠%.9g°, ', [Cabs(Curr^[i]), Cdang(Curr^[i])]));
+            // Writeln();
+
+
             GetInjCurrents(ComplexBuffer, ActorID);  // Get present value of inj currents
-      // Add Together  with yprim currents
+            // Add Together  with yprim currents
             for i := 1 to Yorder do
                 Curr^[i] := Csub(Curr^[i], ComplexBuffer^[i]);
+
+            // Write('VSource Curr: ');
+            // for i := 1 to Yorder do
+            //     Write(Format('%.9g∠%.9g°, ', [Cabs(Curr^[i]), Cdang(Curr^[i])]));
+            // Writeln();
 
         end;  {With}
     except
@@ -1250,6 +1295,9 @@ end;
 //=============================================================================
 procedure TVsourceObj.GetInjCurrents(Curr: pComplexArray; ActorID: Integer);
 
+var
+    i: Integer;
+
 begin
 
    { source injection currents given by this formula:
@@ -1262,6 +1310,11 @@ begin
 
     GetVterminalForSource(ActorID);  // gets voltage vector above
     YPrim.MVMult(Curr, Vterminal);
+
+    Writeln(ParentClass.Name, '.', Name, ' I_inj: ');
+    for i := 1 to Yorder do
+        Write(Format('%.9g∠%.9g°, ', [Cabs(Curr^[i]), Cdang(Curr^[i])]));
+    Writeln();
 
     set_ITerminalUpdated(FALSE, ActorID);
 
